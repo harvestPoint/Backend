@@ -1,16 +1,23 @@
 # Be sure to restart your server when you modify this file.
 
-# Avoid CORS issues when API is called from the frontend app.
-# Handle Cross-Origin Resource Sharing (CORS) in order to accept cross-origin Ajax requests.
+# Origens vêm de CORS_ORIGINS (vírgula). Em desenvolvimento, aceita qualquer origem
+# para facilitar o React PWA local. Em produção, defina CORS_ORIGINS explicitamente.
 
-# Read more: https://github.com/cyu/rack-cors
+Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins do |origin, _env|
+      allowed = ENV.fetch("CORS_ORIGINS", "").split(",").map(&:strip).reject(&:blank?)
 
-# Rails.application.config.middleware.insert_before 0, Rack::Cors do
-#   allow do
-#     origins "example.com"
-#
-#     resource "*",
-#       headers: :any,
-#       methods: [:get, :post, :put, :patch, :delete, :options, :head]
-#   end
-# end
+      if allowed.any?
+        allowed.include?(origin)
+      else
+        Rails.env.development? || Rails.env.test?
+      end
+    end
+
+    resource "*",
+      headers: :any,
+      methods: %i[get post put patch delete options head],
+      expose: %w[Authorization]
+  end
+end

@@ -23,6 +23,18 @@ default: &default
 development:
   <<: *default
   database: harvestpoint_development
+  <% if ENV["DATABASE_HOST"].present? %>
+  host: <%= ENV["DATABASE_HOST"] %>
+  <% end %>
+  <% if ENV["DATABASE_PORT"].present? %>
+  port: <%= ENV["DATABASE_PORT"] %>
+  <% end %>
+  <% if ENV["DATABASE_USERNAME"].present? %>
+  username: <%= ENV["DATABASE_USERNAME"] %>
+  <% end %>
+  <% if ENV["DATABASE_PASSWORD"].present? %>
+  password: <%= ENV["DATABASE_PASSWORD"] %>
+  <% end %>
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -57,6 +69,18 @@ development:
 test:
   <<: *default
   database: harvestpoint_test
+  <% if ENV["DATABASE_HOST"].present? %>
+  host: <%= ENV["DATABASE_HOST"] %>
+  <% end %>
+  <% if ENV["DATABASE_PORT"].present? %>
+  port: <%= ENV["DATABASE_PORT"] %>
+  <% end %>
+  <% if ENV["DATABASE_USERNAME"].present? %>
+  username: <%= ENV["DATABASE_USERNAME"] %>
+  <% end %>
+  <% if ENV["DATABASE_PASSWORD"].present? %>
+  password: <%= ENV["DATABASE_PASSWORD"] %>
+  <% end %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
