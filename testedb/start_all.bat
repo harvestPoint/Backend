@@ -1,0 +1,6 @@
+@echo off
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0start_all.ps1"
+if %errorlevel% neq 0 (
+    echo.
+    pause
+)
