@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  lote: one
+  sensor: one
+  tipo_alerta: MyString
+  mensagem: MyText
+  data_hora: 2026-09-28 12:21:22
+  resolvido: false
+
+two:
+  lote: two
+  sensor: two
+  tipo_alerta: MyString
+  mensagem: MyText
+  data_hora: 2026-09-28 12:21:22
+  resolvido: false

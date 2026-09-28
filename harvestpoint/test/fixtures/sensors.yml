@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  lote: one
+  tipo: MyString
+  unidade_medida: MyString
+  status: MyString
+  data_instalacao: 2026-09-28
+
+two:
+  lote: two
+  tipo: MyString
+  unidade_medida: MyString
+  status: MyString
+  data_instalacao: 2026-09-28
