@@ -1,0 +1,4 @@
+# Dados locais do PostgreSQL e logs
+data/
+*.log
+*.pid
