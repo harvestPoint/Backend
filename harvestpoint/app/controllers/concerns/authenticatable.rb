@@ -22,6 +22,6 @@ module Authenticatable
     return if header.blank?
 
     token = header.sub(/\ABearer\s+/i, "").strip
-    User.find_by_api_token(token)
+    Usuario.find_by_api_token(token)
   end
 end

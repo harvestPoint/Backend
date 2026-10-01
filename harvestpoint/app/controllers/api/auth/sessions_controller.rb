@@ -15,7 +15,7 @@ module Api
           }, status: :unauthorized
         end
 
-        user = User.find_by(email: email)
+        user = Usuario.find_by(email: email)
 
         unless user
           return render json: {
