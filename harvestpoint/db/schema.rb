@@ -142,11 +142,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_01_160000) do
     t.index ["email"], name: "index_usuarios_on_email", unique: true
   end
 
-  add_foreign_key "alertas", "sensores", column: "sensor_id"
+  add_foreign_key "alertas", "sensores"
   add_foreign_key "clima_regioes", "propriedades"
   add_foreign_key "historico_cultivos", "culturas"
   add_foreign_key "historico_cultivos", "lotes"
-  add_foreign_key "leitura_sensores", "sensores", column: "sensor_id"
+  add_foreign_key "leitura_sensores", "sensores"
   add_foreign_key "lotes", "propriedades"
   add_foreign_key "preco_mercados", "culturas"
   add_foreign_key "propriedades", "usuarios"

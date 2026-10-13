@@ -21,6 +21,7 @@ Write-Host "[*] Executando migrations do Rails..." -ForegroundColor Yellow
 Push-Location $HarvestpointDir
 try {
     bundle exec rails db:migrate
+    bundle exec rails db:seed
     bundle exec rails db:test:prepare
     Write-Host "[SUCESSO] Bancos e tabelas configurados e prontos para uso!" -ForegroundColor Green
 } finally {

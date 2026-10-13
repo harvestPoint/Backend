@@ -43,11 +43,8 @@ $statusOutput = & "$binDir\pg_ctl.exe" -D $DataDir status 2>&1
 if ($LASTEXITCODE -eq 0) {
     Write-Host "[SUCESSO] PostgreSQL iniciado com sucesso!" -ForegroundColor Green
 
-    # Garante que o usuario do Windows exista como superusuario para que o Rails conecte sem senhas
-    $currentUser = $env:USERNAME
-    if ($currentUser -and $currentUser -ne "postgres") {
-        & "$binDir\createuser.exe" -h 127.0.0.1 -U postgres -s $currentUser 2>$null
-    }
+    # Garante que o usuario harvestpoint exista como superusuario para Rails
+    & "$binDir\createuser.exe" -h 127.0.0.1 -U postgres -s harvestpoint 2>$null
 } else {
     Write-Error "Falha ao iniciar o PostgreSQL. Verifique o log em: $LogFile"
     exit 1

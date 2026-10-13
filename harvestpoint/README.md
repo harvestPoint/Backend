@@ -60,7 +60,7 @@ cd Backend\testedb
 .\start_db.ps1
 ```
 
-Isso sobe uma instância PostgreSQL na **porta 5433** usando os dados em `testedb/data/`.
+Isso sobe uma instância PostgreSQL na **porta 5432** usando os dados em `testedb/data/`.
 
 ### 2. Instalar dependências Ruby
 
@@ -73,13 +73,12 @@ bundle install
 
 ```powershell
 # No Windows (PowerShell)
-$env:DB_PORT = "5433"
 rails db:create db:migrate db:seed
 ```
 
 ```bash
 # No Linux/macOS
-DB_PORT=5433 rails db:create db:migrate db:seed
+rails db:create db:migrate db:seed
 ```
 
 O seed cria culturas padrão (uva, manga, tomate, melão, pimentão) com parâmetros de temperatura/umidade ideais, além de um usuário de demonstração.
@@ -98,8 +97,8 @@ A API ficará disponível em **`http://localhost:3333`**.
 
 | Variável         | Padrão          | Descrição                                             |
 |------------------|-----------------|-------------------------------------------------------|
-| `DB_PORT`        | `5432`          | Porta do PostgreSQL (use `5433` para o portátil)      |
-| `DB_HOST`        | `localhost`     | Host do banco de dados                                |
+| `DB_PORT`        | `5432`          | Porta do PostgreSQL                                   |
+| `DB_HOST`        | `127.0.0.1`     | Host do banco de dados                                |
 | `DB_USERNAME`    | `postgres`      | Usuário do banco                                      |
 | `DB_PASSWORD`    | _(vazio)_       | Senha do banco                                        |
 | `RAILS_ENV`      | `development`   | Ambiente Rails                                        |
@@ -645,7 +644,6 @@ Localizado em `app/models/recomendacao_colheita.rb` e `app/controllers/api/recom
 ### Executar todos os testes
 
 ```powershell
-$env:DB_PORT = "5433"
 $env:RAILS_ENV = "test"
 rails db:test:prepare
 rails test
