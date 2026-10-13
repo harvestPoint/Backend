@@ -5,7 +5,16 @@ module Api
         user = Usuario.new(registration_params)
 
         if user.save
-          if params[:propriedade].present? || params.dig(:user, :propriedade).present?
+          fazenda_input = params[:fazenda] || params.dig(:user, :fazenda)
+          if fazenda_input.present? && fazenda_input[:nome].present?
+            user.propriedades.create(
+              nome: fazenda_input[:nome].to_s.strip,
+              municipio: fazenda_input[:municipio].presence || "Petrolina - PE",
+              latitude: fazenda_input[:latitude].presence || -9.3891,
+              longitude: fazenda_input[:longitude].presence || -40.5027,
+              area_total: fazenda_input[:area_total].presence || fazenda_input[:area].presence || 100.00
+            )
+          elsif params[:propriedade].present? || params.dig(:user, :propriedade).present?
             nome_prop = (params[:propriedade].presence || params.dig(:user, :propriedade)).to_s.strip
             if nome_prop.present?
               user.propriedades.create(
@@ -29,7 +38,8 @@ module Api
         elsif email_taken?(user)
           render json: {
             error: "user_already_exists",
-            message: "Usuário já cadastrado"
+            message: "Usuário já cadastrado",
+            fields: { email: ["Este e-mail já está cadastrado"] }
           }, status: :conflict
         else
           render_validation_errors(user)

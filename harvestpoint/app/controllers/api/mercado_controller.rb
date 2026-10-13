@@ -4,6 +4,22 @@ module Api
 
     def index
       precos = PrecoMercado.includes(:cultura).order(data_cotacao: :desc)
+      dolar_ptax = BancoCentralService.cotacao_dolar
+      euro_ptax = BancoCentralService.cotacao_euro
+
+      taxa_dolar = (dolar_ptax && dolar_ptax[:venda].to_f > 0) ? dolar_ptax[:venda].to_f : 5.42
+
+      exportacao_produtos = ComexStatService.dados_exportacao.map do |p|
+        usd_kg = p[:preco_medio_usd_kg].to_f
+        brl_kg = (usd_kg * taxa_dolar).round(2)
+        {
+          produto: p[:produto],
+          ncm: p[:ncm],
+          preco_usd_kg: usd_kg,
+          preco_brl_kg: brl_kg
+        }
+      end
+
       render json: {
         data: precos.map(&:as_json_public),
         resumo_culturas: Cultura.all.map do |c|
@@ -15,7 +31,10 @@ module Api
             moeda: ultima&.moeda || "BRL",
             data_cotacao: ultima&.data_cotacao&.to_s
           }
-        end
+        end,
+        dolar: dolar_ptax,
+        euro: euro_ptax,
+        exportacao: exportacao_produtos
       }, status: :ok
     end
 

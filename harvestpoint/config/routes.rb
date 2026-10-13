@@ -38,6 +38,8 @@ Rails.application.routes.draw do
     resources :mercado, only: %i[index create]
     resources :clima, only: %i[index create]
     resources :usuarios, only: %i[index show update]
+    get :exportacao, to: "exportacao#index"
+    get :logistica, to: "logistica#index"
     get :dashboard, to: "dashboard#index"
     get :produtores, to: "usuarios#index"
   end
@@ -82,6 +84,8 @@ Rails.application.routes.draw do
     resources :mercado, only: %i[index create]
     resources :clima, only: %i[index create]
     resources :usuarios, only: %i[index show update]
+    get :exportacao, to: "exportacao#index"
+    get :logistica, to: "logistica#index"
     get :dashboard, to: "dashboard#index"
     get :produtores, to: "usuarios#index"
   end
