@@ -1,0 +1,79 @@
+services:
+  # ============================================================================
+  # Serviço da API Rails (HarvestPoint)
+  # ============================================================================
+  app:
+    build:
+      context: ./harvestpoint
+      dockerfile: Dockerfile
+    container_name: harvestpoint_api
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY:-}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-harvestpoint_production}
+      - DB_USERNAME=${DB_USERNAME:-harvestpoint}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DATABASE_URL=${DATABASE_URL:-}
+      - FRONTEND_ORIGINS=${FRONTEND_ORIGINS:-*}
+      - RAILS_LOG_LEVEL=${RAILS_LOG_LEVEL:-info}
+      - RAILS_MAX_THREADS=${RAILS_MAX_THREADS:-5}
+      - SOLID_QUEUE_IN_PUMA=${SOLID_QUEUE_IN_PUMA:-true}
+      - PORT=3000
+    ports:
+      # Expõe na porta 80 da máquina EC2 via Thruster
+      - "${APP_PORT:-80}:80"
+    volumes:
+      - storage_data:/rails/storage
+    depends_on:
+      db:
+        condition: service_healthy
+        required: false
+    networks:
+      - harvestpoint_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/up"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # ============================================================================
+  # Banco de Dados PostgreSQL (Opcional - Usado caso não utilize AWS RDS)
+  # ============================================================================
+  db:
+    image: postgres:16-alpine
+    container_name: harvestpoint_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-harvestpoint_production}
+      POSTGRES_USER: ${DB_USERNAME:-harvestpoint}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      # Vincula apenas na interface de loopback por segurança
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
+    networks:
+      - harvestpoint_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    name: harvestpoint_postgres_data
+  storage_data:
+    name: harvestpoint_storage_data
+
+networks:
+  harvestpoint_net:
+    name: harvestpoint_network
+    driver: bridge

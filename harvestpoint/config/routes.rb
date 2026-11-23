@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
+  # Health checks para AWS ALB, Route 53 e orquestradores
   get "up" => "rails/health#show", as: :rails_health_check
+  get "health", to: "api/health#show"
 
   namespace :api do
+    get :health, to: "health#show"
+
     namespace :auth do
       post :signup, to: "registrations#create"
       post :login, to: "sessions#create"

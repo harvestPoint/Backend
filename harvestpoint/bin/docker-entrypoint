@@ -1,8 +1,29 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 
-# If running the rails server then create or migrate existing database
+# If running the rails server, wait for database readiness and prepare schema
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
+  DB_HOST="${DB_HOST:-127.0.0.1}"
+  DB_PORT="${DB_PORT:-5432}"
+
+  if [ -n "$DATABASE_URL" ]; then
+    echo "==> Database configured via DATABASE_URL"
+  else
+    echo "==> Checking database readiness at ${DB_HOST}:${DB_PORT}..."
+    for i in $(seq 1 30); do
+      if pg_isready -h "$DB_HOST" -p "$DB_PORT" -t 2 > /dev/null 2>&1; then
+        echo "==> Database is reachable and ready!"
+        break
+      fi
+      echo "==> Waiting for database... ($i/30)"
+      sleep 2
+    done
+  fi
+
+  echo "==> Preparing database (db:prepare)..."
+  ./bin/rails db:prepare || {
+    echo "==> Warning: db:prepare failed or database already prepared. Continuing startup..."
+  }
 fi
 
 exec "${@}"
